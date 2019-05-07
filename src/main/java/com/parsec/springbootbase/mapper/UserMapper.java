@@ -1,13 +1,9 @@
 package com.parsec.springbootbase.mapper;
 
 import com.parsec.springbootbase.entitiy.User;
-import tk.mybatis.mapper.common.Mapper;
+import com.parsec.universal.dao.TKMapper;
+import org.apache.ibatis.annotations.Mapper;
 
-/**
- * description
- *
- * @author xujiahong
- * @date 2019/2/14
- */
-public interface UserMapper extends Mapper<User> {
+@Mapper
+public interface UserMapper extends TKMapper<User> {
 }

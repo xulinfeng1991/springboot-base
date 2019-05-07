@@ -2,18 +2,18 @@ package com.parsec.springbootbase;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.ServletComponentScan;
-import tk.mybatis.spring.annotation.MapperScan;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ServletComponentScan //使用注解注册Servlet
-@MapperScan(basePackages = "com.parsec.springbootbase.mapper") //通过使用@MapperScan可以指定要扫描的Mapper类的包的路径
+@ComponentScan(basePackages = {"com.parsec.*"})
+@org.mybatis.spring.annotation.MapperScan("com.parsec.*")
+@tk.mybatis.spring.annotation.MapperScan("com.parsec.*")
 public class SpringbootBaseApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SpringbootBaseApplication.class, args);
-		System.out.println("hello springboot");
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SpringbootBaseApplication.class, args);
+        System.out.println("hello springboot");
+    }
 
 }
 

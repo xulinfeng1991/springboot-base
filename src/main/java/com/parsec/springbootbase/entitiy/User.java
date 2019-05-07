@@ -1,12 +1,16 @@
 package com.parsec.springbootbase.entitiy;
 
+import com.parsec.universal.utils.DateUtil;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import tk.mybatis.mapper.annotation.NameStyle;
-import tk.mybatis.mapper.code.Style;
+import org.springframework.format.annotation.DateTimeFormat;
+import tk.mybatis.mapper.annotation.KeySql;
 
-import javax.persistence.*;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 /**
@@ -18,22 +22,25 @@ import java.time.LocalDateTime;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
-@NameStyle(Style.camelhumpAndUppercase)
 @Table(name = "tbl_user")
+@ApiModel("User | 用户对象")
 public class User {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "JDBC")
+    @KeySql(useGeneratedKeys = true)
+    @ApiModelProperty("ApiModelProperty-用户ID")
     private Long id;
 
+    @ApiModelProperty("ApiModelProperty-用户名称")
     private String name;
 
-    private Integer age;
+    @ApiModelProperty("ApiModelProperty-用户年龄")
+    private Integer age = 18;
 
-    private LocalDateTime createTime;
-
-    /**
-     * 这是一个冗余字段
-     */
-    @Transient
+    @ApiModelProperty("ApiModelProperty-用户备注")
     private String remark;
+
+    @ApiModelProperty("ApiModelProperty-用户创建时间")
+    @DateTimeFormat(pattern = DateUtil.pattern_YMDHmS)
+    private LocalDateTime createTime;
 }
