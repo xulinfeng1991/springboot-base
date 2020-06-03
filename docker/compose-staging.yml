@@ -1,0 +1,25 @@
+version: '3'
+services:
+    stage_sbase_sb_spring:
+        build:
+          dockerfile: docker/dockerfile
+          context: ../
+        working_dir: /project
+        container_name: $CI_JOB_NAME-$GROUP_NAME-$APP_NAME
+        ports: ["28249:80"]
+        logging:
+          options:
+            max-size: 100m
+        volumes:
+          - /opt/docker_volumes/$APP_NAME-$CI_JOB_NAME/key:/project/key
+          - /opt/docker_volumes/$APP_NAME-$CI_JOB_NAME/files:/opt/files
+        environment:
+            SPRING_PROFILES_ACTIVE: $CI_JOB_STAGE
+        entrypoint: java org.springframework.boot.loader.JarLauncher
+        restart: always
+        networks:
+          - common
+
+networks:
+    common:
+        external: true

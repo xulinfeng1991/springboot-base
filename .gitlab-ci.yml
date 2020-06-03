@@ -1,0 +1,70 @@
+stages:
+  - test
+  - staging
+  - production
+
+variables:
+  GROUP_NAME: sbase
+  APP_NAME: sb
+
+test:
+  stage: test
+  image: qorzj/maven-jdk8
+  services:
+    - name: mysql:5.7
+      alias: mysql
+      command:
+        - "--character-set-server=utf8mb4"
+        - "--collation-server=utf8mb4_unicode_ci"
+        - "--default-time-zone=+08:00"
+        - "--sql-mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
+    - name: redis
+      alias: redis
+  variables:
+      MYSQL_ROOT_PASSWORD: passwd
+      MYSQL_DATABASE: parsec_test
+      SPRING_PROFILES_ACTIVE: testci
+      MAVEN_OPTS: "-Dmaven.repo.local=/cache/m2"
+  script:
+    - mvn -B clean integration-test
+    - rm -rf target/dist/
+    - unzip target/sb-0.0.1-SNAPSHOT.jar -d target/dist/
+    - rm -f target/dist/BOOT-INF/lib/android-json-*.jar
+  artifacts:
+    paths:
+      - target/dist/
+    expire_in: 10 hours
+  tags:
+    - java_test
+
+stage:
+  stage: staging
+  script:
+    - pwd
+    - docker-compose -p $CI_JOB_NAME-$GROUP_NAME-$APP_NAME -f docker/compose-$CI_JOB_STAGE.yml up -d --build
+  environment:
+    name: $CI_JOB_NAME
+    url: http://$APP_NAME.$GROUP_NAME.$CI_JOB_NAME.ly.parsec.com.cn:12114
+  dependencies:
+    - test
+  when: manual
+  only:
+    - master
+  tags:
+    - ____ #runner名称
+
+app:
+  stage: production
+  script:
+    - pwd
+    - docker-compose -p $CI_JOB_NAME-$GROUP_NAME-$APP_NAME -f docker/compose-$CI_JOB_STAGE.yml up -d --build
+  environment:
+    name: $CI_JOB_NAME
+    url: http://$APP_NAME.$GROUP_NAME.$CI_JOB_NAME.ly.parsec.com.cn:12114
+  dependencies:
+    - test
+  when: manual
+  only:
+    - disabled
+  tags:
+    - ____ #runner名称

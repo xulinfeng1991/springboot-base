@@ -1,0 +1,6 @@
+FROM qorzj/java8-alpine
+COPY target/dist/BOOT-INF/lib     /project/BOOT-INF/lib
+COPY target/dist/org              /project/org
+COPY target/dist/META-INF         /project/META-INF
+COPY target/dist/BOOT-INF/classes /project/BOOT-INF/classes
+CMD date && java -version

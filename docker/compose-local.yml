@@ -1,0 +1,18 @@
+version: '3'
+services:
+    local_sbase_sb_redis:
+        image: redis
+        ports: ["25224:6379"]
+        entrypoint: redis-server
+    local_sbase_sb_mysql:
+        image: mysql:5
+        ports: ["14758:3306"]
+        environment:
+            MYSQL_ROOT_PASSWORD: passwd
+            MYSQL_DATABASE: parsec_test
+        command:
+          - mysqld
+          - "--character-set-server=utf8mb4"
+          - "--collation-server=utf8mb4_unicode_ci"
+          - "--default-time-zone=+08:00"
+          - "--sql-mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
